@@ -1,0 +1,42 @@
+package net.tzolov.geode.archive;
+
+import org.influxdb.InfluxDB;
+import org.influxdb.InfluxDB.LogLevel;
+import org.influxdb.InfluxDBFactory;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import net.tzolov.geode.archive.loader.StatisticsToInfluxLoader;
+
+@SpringBootApplication
+@Configuration
+public class StatisticsLoaderApplication implements CommandLineRunner{
+
+	@Bean
+	public InfluxDB influxDB(
+			@Value("${influxUrl}") String influxUrl,
+			@Value("${influxUser}") String influxUser,
+			@Value("${influxPassword}") String influxPassword) {
+		InfluxDB influxDB = InfluxDBFactory.connect(influxUrl, influxUser, influxPassword);
+		influxDB.setLogLevel(LogLevel.NONE);
+		return  influxDB;
+	}
+
+	@Autowired
+	private StatisticsToInfluxLoader statisticsLoader;
+
+	public static void main(String[] args) {
+		SpringApplication.run(StatisticsLoaderApplication.class, args);
+	}
+
+	@Override
+	public void run(String... strings) throws Exception {
+		statisticsLoader.load();
+	}
+}
