@@ -4,8 +4,8 @@ Apache Geode toolset for analysing and visualising historical and real-time stat
 
 ![Apache Geode Grafana Dashboards](./doc/geode-dashboards.png)
 
-Following sub-projects support real-time (`jmx-to-grafana`) and historical ( [statistics-to-grafana](https://github.com/tzolov/geode-dashboard/tree/master/statistics-to-grafana) ) metrics monitoring.
-## jmx-to-grafana (in progress) 
+Following sub-projects support real-time ([jmx-to-grafana](https://github.com/tzolov/geode-dashboard/tree/master/jmx-to-grafana)) and historical ( [statistics-to-grafana](https://github.com/tzolov/geode-dashboard/tree/master/statistics-to-grafana) ) metrics monitoring.
+## [jmx-to-grafana](https://github.com/tzolov/geode-dashboard/tree/master/jmx-to-grafana)
 stream Geode cluster real-time metrics to Grafana dashboards.
 
 ## [statistics-to-grafana](https://github.com/tzolov/geode-dashboard/tree/master/statistics-to-grafana) 
