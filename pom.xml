@@ -48,6 +48,7 @@
 	</build>
 
 	<modules>
+		<module>jmx-to-grafana</module>
 		<module>statistics-to-grafana</module>
 	</modules>
 </project>

@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.tzolov.geode.archive;
+package net.tzolov.geode.jmx;
+
+import javax.management.MBeanServerConnection;
+import javax.management.remote.JMXConnector;
+import javax.management.remote.JMXConnectorFactory;
+import javax.management.remote.JMXServiceURL;
 
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDB.LogLevel;
@@ -27,17 +32,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import net.tzolov.geode.archive.loader.StatisticsToInfluxLoader;
+import net.tzolov.geode.jmx.service.JmxInfluxLoader;
 
 @SpringBootApplication
 @Configuration
-public class StatisticsLoaderApplication implements CommandLineRunner {
+public class JmxToGrafanaApplication implements CommandLineRunner {
 
 	@Autowired
-	private StatisticsToInfluxLoader statisticsLoader;
+	private JmxInfluxLoader jmxInfluxLoader;
 
 	public static void main(String[] args) {
-		SpringApplication.run(StatisticsLoaderApplication.class, args);
+		SpringApplication.run(JmxToGrafanaApplication.class, args);
 	}
 
 	@Bean
@@ -50,8 +55,25 @@ public class StatisticsLoaderApplication implements CommandLineRunner {
 		return influxDB;
 	}
 
+	@Bean
+	public MBeanServerConnection jmxConnection(
+			@Value("${mbeanHostName}") String mbeanHostName,
+			@Value("${mbeanPort}") String mbeanPort) {
+
+		try {
+			String mbeanServerUrl = "service:jmx:rmi:///jndi/rmi://" + mbeanHostName.trim() + ":" + mbeanPort.trim() + "/jmxrmi";
+			JMXServiceURL url = new JMXServiceURL(mbeanServerUrl);
+
+			JMXConnector jmxConnector = JMXConnectorFactory.connect(url, null);
+			return jmxConnector.getMBeanServerConnection();
+		}
+		catch (Exception ex) {
+			throw new RuntimeException((ex));
+		}
+	}
+
 	@Override
 	public void run(String... strings) throws Exception {
-		statisticsLoader.load();
+		jmxInfluxLoader.start();
 	}
 }
