@@ -53,4 +53,4 @@ Complete list of statistics-to-grafana parameters:
 
 
 #### Predefined Dashboards
-Use the predefined [Geode Grafana Dashboards](./src/mainresources/dashboards) to visualize Cluster, Members or Regions view of the distributed system. 
+Use the predefined [Geode Grafana Dashboards](./src/main/resources/dashboards) to visualize Cluster, Members or Regions view of the distributed system. 
