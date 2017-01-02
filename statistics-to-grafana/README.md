@@ -51,18 +51,11 @@ Complete list of statistics-to-grafana parameters:
 | geodeMemberName | None | Name that uniquely identifies the Geode instance (e.g. member) which produced the statistics being loaded  |
 
 #### Build Grafana Dashboard
-* Define datasource:`GeodeArchive` to the `GeodeArchive` Influx database. Set approriate InfluxDB URL and credentials. 
-![Member Template Definition](../doc/geode_grafana_statistic_archive_datasource.png)
-* Create new Grafana dashboard named `ArchiveDashboard`
-* Inside `ArchiveDashboard` create member tag Template (`show tag values with key="archiveMember"`). 
-Set `GeodeArchive` as Data Source and enable the `Multi-value` option. Later allows to select the members to show statistics for.  
-![Member Template Definition](../doc/geode_grafana_member_template_definition.png)
-* Create Number-Of-Threads-Per-Member panel to plot the number of threads used by each Geode member.
-![Number of Threads Per Member Definition](../doc/geode_grafana_panel_definition.png)
-Pick `GeodeArchive` as panel's data source. Set the retention policy to `autogen`. In the `FROM` dropdown clause pick the `VMStats:vmStats` measurement. 
-Use the `member` template variable in the `WHERE` and `GROUP BY` clauses to (sub)select the members to visualize.`
-* Adjust the time range to reflect the interval when the statistic is collected
-![Number of Threads Per Member Panel](../doc/geode_grafana_thread_number_diagram.png)
-
-
+|  |  |
+| ------------- | ------------ |
+| ![Member Template Definition](../doc/geode_grafana_statistic_archive_datasource.png) | Create datasource:`GeodeArchive` to the `GeodeArchive` Influx database. Set approriate InfluxDB URL and credentials. |
+| | Create new Grafana dashboard named `ArchiveDashboard` |  
+| ![Member Template Definition](../doc/geode_grafana_member_template_definition.png) | Inside `ArchiveDashboard` create member tag Template (`show tag values with key="archiveMember"`).  Set `GeodeArchive` as Data Source and enable the `Multi-value` option. Later allows to select the members to show statistics for.|
+| ![Number of Threads Per Member Definition](../doc/geode_grafana_panel_definition.png) | Create Number-Of-Threads-Per-Member panel to plot the number of threads used by each Geode member. Pick `GeodeArchive` as panel's data source. Set the retention policy to `autogen`. In the `FROM` dropdown clause pick the `VMStats:vmStats` measurement. 
+| ![Number of Threads Per Member Panel](../doc/geode_grafana_thread_number_diagram.png) | Adjust the time range to reflect the interval when the statistic is collected |                                                                                                                                                                                        Use the `member` template variable in the `WHERE` and `GROUP BY` clauses to (sub)select the members to visualize.  
 

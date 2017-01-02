@@ -47,10 +47,24 @@ Complete list of statistics-to-grafana parameters:
 | mbeanPort | 1190 |  |
 | cronExpression | 0 0/1 * * * ? | Time interval for pulling JMX metrics from Geode and load them into InfluxDB. Defaults to 1m. Use `--cronExpression="..."` syntax to set the expression from the command line. |
 
-#### Build Grafana Goede JMX Dashboard
-* Define datasource:`GeodeJmx` to the `GeodeJmx` Influx database. Set appropriate InfluxDB URL and credentials.
-* ... TODO
+Following table show which Geode MBeans are exposed into InfluxDB time-series
 
+| Geode MBean Name | InfluxDB Measurement Name | Description |
+| ------------- | ------------- | ------------ |
+| [DistributedSystemMXBean](http://gemfire.docs.pivotal.io/geode/managing/management/list_of_mbeans_full.html#topic_14E3721DD0CF47D7AD8C742DFBE9FB9C__section_4D7A4C82DD974BB5A5E52B34A6D888B4) - GemFire:type=Distributed,service=System | Distributed | System-wide aggregate MBean that provides a high-level view of the entire distributed system including all members (cache servers, peers, locators) and their caches. At any given point of time, it can provide a snapshot of the complete distributed system and its operations. |
+| [MemberMXBean](http://gemfire.docs.pivotal.io/geode/managing/management/list_of_mbeans_full.html#topic_48194A5BDF3F40F68E95A114DD702413__section_796A989549304BF7A536A33A913322A4) - GemFire:type=Member,member=\<name-or-dist-member-id\> | Members | Member’s local view of its connection and cache. It is the primary gateway to manage a particular member. It exposes member level attributes and statistics. |
+| [RegionMXBean](http://gemfire.docs.pivotal.io/geode/managing/management/list_of_mbeans_full.html#topic_48194A5BDF3F40F68E95A114DD702413__section_577A666924E54352AF69294DC8DEFEBF) - GemFire:type=Member,service=Region,name=\<regionName\>,member=\<name-or-dist-member-id\> | Regions | Member’s local view of region. |
+
+
+#### Build Grafana Goede JMX Dashboard
+|  |  |
+| ------------- | ------------ |
+| ![GeodeJmx Sourxe Definition](../doc/DefineGeodeJmxSource.png) | Define datasource:`GeodeJmx` to the `GeodeJmx` Influx database. Set appropriate InfluxDB URL and credentials. |
+| ![Geode HeapUsage Gauge Metrics](../doc/GeodeHeapUsageGaugeMetrics.png) | Create Geode Heap Usage Gauge. Create `Singlestat` panel and select `GeodeJmx` as datasource. Define query: `SELECT "UsedHeapSize" FROM "autogen"."Distributed" WHERE $timeFilter`. |
+| ![Geode HeapUsage Gauge Options](../doc/GeodeHeapUsageGaugeOptions.png) | Within the `Options` tab set the value stat to `current`, check the `Spark Line Show` and `Gauge Show` boxes. |
+| ![Geode HeapUsage Gauge](../doc/GeodeHeapUsageGauge.png) | Result gauge would look like this |
+
+Explore the `Predefined Dashboards` for more comprehensive dashboards panels. 
 
 #### Predefined Dashboards
-Use the predefined [Geode Grafana Dashboards](./src/main/resources/dashboards) to visualize Cluster, Members or Regions view of the distributed system. 
+Use or customize the sample [Geode Grafana Dashboards](./src/main/resources/dashboards) to visualize Cluster, Members or Regions view of the distributed system. 

@@ -31,7 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.gemstone.gemfire.management.DistributedSystemMXBean;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -58,7 +57,7 @@ public class JmxInfluxLoader {
 
 	private final MBeanServerConnection jmxConnection;
 	private final InfluxDB influxDB;
-	private DistributedSystemMXBean distributedSystemMXBean;
+	private GeodeDistributedSystem distributedSystemMXBean;
 	private String mbeanHostName;
 	private String mbeanPort;
 	private String influxDatabaseName;
@@ -121,6 +120,11 @@ public class JmxInfluxLoader {
 					}
 				});
 
+	}
+
+	public  interface GeodeDistributedSystem {
+		String[] listMembers();
+		String[] listRegions();
 	}
 
 	// "0 0/1 * * * ?" - every minute
@@ -190,7 +194,7 @@ public class JmxInfluxLoader {
 		return query;
 	}
 
-	private DistributedSystemMXBean getDistributedSystemMXBean() {
+	private GeodeDistributedSystem getDistributedSystemMXBean() {
 		if (distributedSystemMXBean == null) {
 
 			try {
@@ -198,7 +202,7 @@ public class JmxInfluxLoader {
 						MBeanServerInvocationHandler.newProxyInstance(
 								jmxConnection,
 								new ObjectName(GEM_FIRE_SERVICE_SYSTEM_TYPE_DISTRIBUTED),
-								DistributedSystemMXBean.class,
+								GeodeDistributedSystem.class,
 								false);
 			}
 			catch (MalformedObjectNameException e) {

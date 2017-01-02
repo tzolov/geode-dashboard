@@ -1,5 +1,5 @@
 # Geode - Grafana Dashboards
-Predefined Grafana dashboards useful to visualize Geode JMX metrics. 
+Following sample Grafana dashboards visualize various Geode JMX metrics. Use them as templates to build your own dashboards. 
 
 | Dashboard File | Description |
 | ------------- | ------------ |
