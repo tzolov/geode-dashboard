@@ -32,8 +32,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import net.tzolov.geode.jmx.service.JmxInfluxLoader;
-
 @SpringBootApplication
 @Configuration
 public class JmxToGrafanaApplication implements CommandLineRunner {
