@@ -50,3 +50,7 @@ Complete list of statistics-to-grafana parameters:
 #### Build Grafana Goede JMX Dashboard
 * Define datasource:`GeodeJmx` to the `GeodeJmx` Influx database. Set appropriate InfluxDB URL and credentials.
 * ... TODO
+
+
+#### Predefined Dashboards
+Use the predefined [Geode Grafana Dashboards](./src/resources/dashboard) to visualize Cluster, Members or Regions view of the distributed system. 

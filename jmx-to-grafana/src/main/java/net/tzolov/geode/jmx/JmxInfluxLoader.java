@@ -117,7 +117,7 @@ public class JmxInfluxLoader {
 								log.error("Failed to reload the Geode JMXdefintiti", e);
 							}
 							break;
-						}
+					}
 					}
 				});
 
