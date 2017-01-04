@@ -9,8 +9,6 @@ and historical ([statistics-to-grafana](./statistics-to-grafana)) metrics monito
 
 ## [Geode JMX To Grafana](./jmx-to-grafana) 
 [<img align="left" src="http://img.youtube.com/vi/e2UlWm1w2yY/0.jpg" alt="zeppelin-view" hspace="10" width="130"></img>](https://www.youtube.com/watch?v=e2UlWm1w2yY)
-The [Geode JMX Grafana Dashboard Video](https://www.youtube.com/watch?v=e2UlWm1w2yY) illustrates the approach. It shows how to deploy and start the `jmx-to-grafana` 
-and how to build Grafana dashboards using the geode jmx feed.
 Geode distributed system real-time metrics visualization with Grafana dashboard. 
 Geode uses a federated `Open MBean`  to manage and monitor all members of the distributed system. Single MBeanServer aggregates 
 MBeans from local and remote members and provides a consolidated, single-agent view of the 
@@ -19,6 +17,8 @@ to InfluxDB database. Grafana consumes the feeds and provides graphical dashboar
 health and performance of Geode clusters, members, and regions.
 Internally `jmx-to-grafana` communicates with a Geode JMX manager to provide a complete view of 
 your Geode deployment. 
+The [Geode JMX Grafana Dashboard Video](https://www.youtube.com/watch?v=e2UlWm1w2yY) illustrates the approach. It shows how to deploy and start the `jmx-to-grafana` 
+and how to build Grafana dashboards using the geode jmx feed.
 
 ## [Geode Historical Statistics To Gafana](./statistics-to-grafana) 
 Leverage Grafana (metric & analytic dashboards tool) for querying, visualizing and analysing [Apache Geode & Gemfire Statistics Archives](http://geode.apache.org/docs/guide/managing/statistics/chapter_overview.html). 

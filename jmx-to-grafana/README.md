@@ -6,7 +6,7 @@ One can use generic JMX clients to monitor or manage the Geode distributed syste
 `jmx-to-grafana` feeds Geode MBeans metrics data into time-series databases (such as InfluxDB). Later is used in turn to 
 feed the [Gfafana](http://grafana.org/) dashboards. Grafana allows to build comprehensive dashboards.  
 
-The [Geode JMX Grafana Dashboard Video](https://www.youtube.com/watch?v=oc7U73Vp05M) illustrates the approach. It shows how to deploy and start the `jmx-to-grafana` 
+The [Geode JMX Grafana Dashboard Video](https://www.youtube.com/watch?v=e2UlWm1w2yY) illustrates the approach. It shows how to deploy and start the `jmx-to-grafana` 
 and how to build Grafana dashboards using the geode jmx feed. 
 
 
