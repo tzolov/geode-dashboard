@@ -8,7 +8,7 @@
   "graphTooltip": 0,
   "hideControls": false,
   "time": {
-    "from": "now-3h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -41,8 +41,8 @@
       {
         "allValue": null,
         "current": {
-          "text": "server1",
-          "value": "server1"
+          "text": "server2",
+          "value": "server2"
         },
         "datasource": "myInfluxDB2",
         "hide": 0,
@@ -66,7 +66,7 @@
   },
   "refresh": false,
   "schemaVersion": 14,
-  "version": 62,
+  "version": 64,
   "links": [
     {
       "icon": "external link",
@@ -1751,7 +1751,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "GET",
+              "alias": "Get Average Latency",
               "dsType": "influxdb",
               "groupBy": [],
               "measurement": "Member",
@@ -1777,7 +1777,7 @@
               ]
             },
             {
-              "alias": "PUT",
+              "alias": "Put Average Latency",
               "dsType": "influxdb",
               "groupBy": [],
               "measurement": "Member",
@@ -1806,7 +1806,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "GET/PUT Latency",
+          "title": "Get/Put Latency",
           "tooltip": {
             "shared": true,
             "sort": 0,

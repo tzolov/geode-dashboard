@@ -125,6 +125,7 @@ public class JmxInfluxLoader {
 	public  interface GeodeDistributedSystem {
 		String[] listMembers();
 		String[] listRegions();
+		ObjectName[] listDistributedRegionObjectNames();
 	}
 
 	// "0 0/1 * * * ?" - every minute
@@ -140,11 +141,12 @@ public class JmxInfluxLoader {
 			serverBuilder.addQuery(memberQuery(influxDB, jmxConnection, member));
 		}
 
+		// Build DistributedRegionMXBean for each region
 		for (String region : getDistributedSystemMXBean().listRegions()) {
-			serverBuilder.addQuery(regionQuery(influxDB, jmxConnection, region));
+			serverBuilder.addQuery(distributedRegionQuery(influxDB, jmxConnection, region));
 		}
 
-		serverBuilder.addQuery(clusterQuery(influxDB, jmxConnection));
+		serverBuilder.addQuery(distributedSystemQuery(influxDB, jmxConnection));
 
 		return serverBuilder.build();
 	}
@@ -155,10 +157,10 @@ public class JmxInfluxLoader {
 		}
 	}
 
-	private Query clusterQuery(InfluxDB influxDB, MBeanServerConnection jmxConnection) {
+	private Query distributedSystemQuery(InfluxDB influxDB, MBeanServerConnection jmxConnection) {
 		ImmutableMap<String, String> tags = ImmutableMap.of();
 		String objectName = "GemFire:service=System,type=Distributed";
-		return createQuery(influxDB, jmxConnection, tags, objectName, "Distributed");
+		return createQuery(influxDB, jmxConnection, tags, objectName, "DistributedSystem");
 	}
 
 	private Query memberQuery(InfluxDB influxDB, MBeanServerConnection jmxConnection, String memberName) {
@@ -167,10 +169,10 @@ public class JmxInfluxLoader {
 		return createQuery(influxDB, jmxConnection, tags, objectName, "Member");
 	}
 
-	private Query regionQuery(InfluxDB influxDB, MBeanServerConnection jmxConnection, String regionName) {
+	private Query distributedRegionQuery(InfluxDB influxDB, MBeanServerConnection jmxConnection, String regionName) {
 		ImmutableMap<String, String> tags = ImmutableMap.<String, String>builder().put("region", regionName).build();
 		String objectName = "GemFire:service=Region,name=/" + regionName.trim() + ",type=Distributed";
-		return createQuery(influxDB, jmxConnection, tags, objectName, "Region");
+		return createQuery(influxDB, jmxConnection, tags, objectName, "DistributedRegion");
 	}
 
 	private Query createQuery(InfluxDB influxDB, MBeanServerConnection jmxConnection,

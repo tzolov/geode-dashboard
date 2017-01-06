@@ -1,7 +1,13 @@
 # Apache Geode real-time JMX Metrics Plot with Grafana
 
-[<img align="left" src="http://img.youtube.com/vi/e2UlWm1w2yY/0.jpg" alt="zeppelin-view" hspace="10" width="130"></img>](https://www.youtube.com/watch?v=e2UlWm1w2yY) [Apache Geode](http://geode.apache.org/) uses a federated [Open MBean](http://docs.oracle.com/cd/E19206-01/816-4178/6madjde4v/index.html) strategy to manage and monitor all members of the distributed system. Your Java classes interact with a single MBeanServer that aggregates MBeans from other local and remote members. Using this strategy gives you a consolidated, single-agent view of the distributed system.					
-One can use generic JMX clients to monitor or manage the Geode distributed system by using JMX compliant tools such as [JConsole](https://docs.oracle.com/javase/8/docs/technotes/guides/management/jconsole.html) and [Geode Pulse](http://geode.apache.org/docs/guide/tools_modules/pulse/chapter_overview.html).
+[<img align="left" src="http://img.youtube.com/vi/e2UlWm1w2yY/0.jpg" alt="zeppelin-view" hspace="10" width="130"></img>](https://www.youtube.com/watch?v=e2UlWm1w2yY) 
+[Apache Geode](http://geode.apache.org/) uses a federated [Open MBean](http://geode.apache.org/docs/guide/managing/management/mbean_architecture.html) 
+architecture to manage and monitor all members of the distributed system. Your Java classes interact with a single 
+MBeanServer that aggregates MBeans from other local and remote members. Using this strategy gives you a consolidated, 
+single-agent view of the distributed system.					
+One can use generic JMX clients to monitor or manage the Geode distributed system by using JMX compliant tools such 
+as [JConsole](http://geode.apache.org/docs/guide/managing/management/mbeans_jconsole.html) 
+and [Geode Pulse](http://geode.apache.org/docs/guide/tools_modules/pulse/chapter_overview.html).
   
 `jmx-to-grafana` feeds Geode MBeans metrics data into time-series databases (such as InfluxDB). Later is used in turn to 
 feed the [Gfafana](http://grafana.org/) dashboards. Grafana allows to build comprehensive dashboards.  
@@ -23,19 +29,26 @@ mvn clean install
 
 ## Quick Start
 Build Grafana dashboard to plot real-time metrics of Geode cluster. 
-[Grafana](http://docs.grafana.org/installation) and [InfluxDB](https://docs.influxdata.com/influxdb/v1.1/introduction/installation) have to be installed first. Samples below expect InfluxDB on `http://localhost:8086` and Grafana on `http://localhost:30000`. 
+[Grafana](http://docs.grafana.org/installation) and 
+[InfluxDB](https://docs.influxdata.com/influxdb/v1.1/introduction/installation) have to be installed first. 
 
-#### Start Jmx To Grafana daemon
+#### Start JMX To InfluxDB loader
+The `jmx-to-grafana` reads every minute (`cronExpression="0 0/1 * * * ?"`) the JMX metrics from 
+Geode MBean Server (`http://localhost:1199`) and loads them into InfluxDB database (`GeodeJmx`). The InfluxDB is 
+running at `http://localhost:8086`. 
+
+The Grafana server (`http://localhost:30000`) uses the `GeodeJmx` time-series database to plot various `Real-Time` dashboards 
 
 ```
-java -jar ./target/jmx-to-grafana-0.0.1-SNAPSHOT.jar 
-   --influxUrl=http://localhost:8086 
-   --influxDatabaseName=GeodeJmx 
+java -jar ./target/jmx-to-grafana-0.0.1-SNAPSHOT.jar
    --mbeanHostName=localhost 
    --mbeanPort=1199
+   --influxUrl=http://localhost:8086 
+   --influxDatabaseName=GeodeJmx
+   --cronExpression="0 0/1 * * * ?"
 ```
 
-Complete list of statistics-to-grafana parameters:
+###### Configuration parameters
 
 | Property Name | Default Value | Description |
 | ------------- | ------------- | ------------ |
@@ -49,17 +62,22 @@ Complete list of statistics-to-grafana parameters:
 | mbeanPort | 1190 |  |
 | cronExpression | 0 0/1 * * * ? | Time interval for pulling JMX metrics from Geode and load them into InfluxDB. Defaults to 1m. Use `--cronExpression="..."` syntax to set the expression from the command line. |
 
-Following table show which Geode MBeans are exposed into InfluxDB time-series
-
+###### Exported Geode MBeans
 | Geode MBean Name | InfluxDB Measurement Name | Description |
 | ------------- | ------------- | ------------ |
-| [DistributedSystemMXBean](http://gemfire.docs.pivotal.io/geode/managing/management/list_of_mbeans_full.html#topic_14E3721DD0CF47D7AD8C742DFBE9FB9C__section_4D7A4C82DD974BB5A5E52B34A6D888B4) - GemFire:type=Distributed,service=System | Distributed | System-wide aggregate MBean that provides a high-level view of the entire distributed system including all members (cache servers, peers, locators) and their caches. At any given point of time, it can provide a snapshot of the complete distributed system and its operations. |
-| [MemberMXBean](http://gemfire.docs.pivotal.io/geode/managing/management/list_of_mbeans_full.html#topic_48194A5BDF3F40F68E95A114DD702413__section_796A989549304BF7A536A33A913322A4) - GemFire:type=Member,member=\<name-or-dist-member-id\> | Members | Member’s local view of its connection and cache. It is the primary gateway to manage a particular member. It exposes member level attributes and statistics. |
-| [RegionMXBean](http://gemfire.docs.pivotal.io/geode/managing/management/list_of_mbeans_full.html#topic_48194A5BDF3F40F68E95A114DD702413__section_577A666924E54352AF69294DC8DEFEBF) - GemFire:type=Member,service=Region,name=\<regionName\>,member=\<name-or-dist-member-id\> | Regions | Member’s local view of region. |
+| [DistributedSystemMXBean](http://bit.ly/2ijH8dj) `GemFire:type=Distributed,service=System`| DistributedSystem | System-wide aggregate MBean that provides a high-level view of the entire distributed system including all members (cache servers, peers, locators) and their caches. At any given point of time, it can provide a snapshot of the complete distributed system and its operations. |
+| [DistributedRegionMXBean](http://bit.ly/2ijEnIX) `GemFire:type=Distributed,service=Region,name=\<regionName\>` | DistributedRegion | System-wide aggregate MBean of a named region. It provides a high-level view of a region for all members hosting and/or using that region. For example, you can obtain a list of all members that are hosting the region. Some methods are only available for partitioned regions. |
+| [MemberMXBean](http://bit.ly/2jbLovt) `GemFire:type=Member,member=\<name-or-dist-member-id\>` | Member | Member’s local view of its connection and cache. It is the primary gateway to manage a particular member. It exposes member level attributes and statistics. |
+Consult the [Geode JMX MBeans](http://geode.apache.org/docs/guide/managing/management/list_of_mbeans.html) for the full list of available Geode MBeans.
+
+###### Automatic feed re-configuration
+The `jmx-to-grafana` reconfigures the feeds automatically on following Geode events:
+* New Member is added or removed form the cluster: `gemfire.distributedsystem.cache.member.departed`,`gemfire.distributedsystem.cache.member.joined`.
+* New Regions is created for removed: `gemfire.distributedsystem.cache.region.created`, `gemfire.distributedsystem.cache.region.closed`
 
 
 #### Build Grafana Goede JMX Dashboard
-|  |  |
+| | |
 | ------------- | ------------ |
 | ![GeodeJmx Sourxe Definition](../doc/DefineGeodeJmxSource.png) | Define datasource:`GeodeJmx` to the `GeodeJmx` Influx database. Set appropriate InfluxDB URL and credentials. |
 | ![Geode HeapUsage Gauge Metrics](../doc/GeodeHeapUsageGaugeMetrics.png) | Create Geode Heap Usage Gauge. Create `Singlestat` panel and select `GeodeJmx` as datasource. Define query: `SELECT "UsedHeapSize" FROM "autogen"."Distributed" WHERE $timeFilter`. |

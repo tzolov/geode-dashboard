@@ -8,7 +8,7 @@
   "graphTooltip": 0,
   "hideControls": false,
   "time": {
-    "from": "now-6h",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {
@@ -42,7 +42,8 @@
         "allValue": null,
         "current": {
           "text": "ticketRegion",
-          "value": "ticketRegion"
+          "value": "ticketRegion",
+          "tags": []
         },
         "datasource": "myInfluxDB2",
         "hide": 0,
@@ -65,7 +66,7 @@
     "list": []
   },
   "schemaVersion": 14,
-  "version": 24,
+  "version": 36,
   "links": [
     {
       "icon": "external link",
@@ -135,7 +136,7 @@
             {
               "dsType": "influxdb",
               "groupBy": [],
-              "measurement": "Region",
+              "measurement": "DistributedRegion",
               "policy": "autogen",
               "refId": "A",
               "resultFormat": "time_series",
@@ -228,7 +229,7 @@
             {
               "dsType": "influxdb",
               "groupBy": [],
-              "measurement": "Region",
+              "measurement": "DistributedRegion",
               "policy": "autogen",
               "refId": "A",
               "resultFormat": "time_series",
@@ -321,7 +322,7 @@
             {
               "dsType": "influxdb",
               "groupBy": [],
-              "measurement": "Region",
+              "measurement": "DistributedRegion",
               "policy": "autogen",
               "refId": "A",
               "resultFormat": "time_series",
@@ -414,7 +415,7 @@
             {
               "dsType": "influxdb",
               "groupBy": [],
-              "measurement": "Region",
+              "measurement": "DistributedRegion",
               "policy": "autogen",
               "refId": "A",
               "resultFormat": "time_series",
@@ -508,7 +509,7 @@
               "dsType": "influxdb",
               "groupBy": [],
               "hide": true,
-              "measurement": "Region",
+              "measurement": "DistributedRegion",
               "policy": "autogen",
               "refId": "A",
               "resultFormat": "time_series",
@@ -601,7 +602,7 @@
             {
               "dsType": "influxdb",
               "groupBy": [],
-              "measurement": "Region",
+              "measurement": "DistributedRegion",
               "policy": "autogen",
               "refId": "A",
               "resultFormat": "time_series",
@@ -694,7 +695,7 @@
             {
               "dsType": "influxdb",
               "groupBy": [],
-              "measurement": "Region",
+              "measurement": "DistributedRegion",
               "policy": "autogen",
               "refId": "A",
               "resultFormat": "time_series",
@@ -741,10 +742,517 @@
     },
     {
       "title": "Dashboard Row",
-      "panels": [],
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "GeodeJmx",
+          "fill": 1,
+          "id": 8,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Average Reads",
+              "yaxis": 2
+            }
+          ],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Average Writes",
+              "dsType": "influxdb",
+              "groupBy": [],
+              "measurement": "DistributedRegion",
+              "policy": "autogen",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "AverageWrites"
+                    ],
+                    "type": "field"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "region",
+                  "operator": "=~",
+                  "value": "/^$region$/"
+                }
+              ]
+            },
+            {
+              "alias": "Average Reads",
+              "dsType": "influxdb",
+              "groupBy": [],
+              "measurement": "DistributedRegion",
+              "policy": "autogen",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "AverageReads"
+                    ],
+                    "type": "field"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "region",
+                  "operator": "=~",
+                  "value": "/^$region$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Average Reads/Writes",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "wps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "rps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "GeodeJmx",
+          "fill": 1,
+          "id": 10,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Average Reads",
+              "yaxis": 2
+            }
+          ],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Bucket Count",
+              "dsType": "influxdb",
+              "groupBy": [],
+              "measurement": "DistributedRegion",
+              "policy": "autogen",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "BucketCount"
+                    ],
+                    "type": "field"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "region",
+                  "operator": "=~",
+                  "value": "/^$region$/"
+                }
+              ]
+            },
+            {
+              "alias": "Primary Bucket Count",
+              "dsType": "influxdb",
+              "groupBy": [],
+              "measurement": "DistributedRegion",
+              "policy": "autogen",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "PrimaryBucketCount"
+                    ],
+                    "type": "field"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "region",
+                  "operator": "=~",
+                  "value": "/^$region$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Buckets",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "rps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": false
+            }
+          ]
+        }
+      ],
       "showTitle": false,
       "titleSize": "h6",
-      "height": 337,
+      "height": 198,
+      "repeat": null,
+      "repeatRowId": null,
+      "repeatIteration": null,
+      "collapse": false
+    },
+    {
+      "title": "Dashboard Row",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "GeodeJmx",
+          "fill": 1,
+          "id": 9,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "max": true,
+            "min": true,
+            "show": true,
+            "total": true,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Average Reads",
+              "yaxis": 1
+            }
+          ],
+          "span": 12,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Gets Rate",
+              "dsType": "influxdb",
+              "groupBy": [],
+              "measurement": "DistributedRegion",
+              "policy": "autogen",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "GetsRate"
+                    ],
+                    "type": "field"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "region",
+                  "operator": "=~",
+                  "value": "/^$region$/"
+                }
+              ]
+            },
+            {
+              "alias": "Puts Rate",
+              "dsType": "influxdb",
+              "groupBy": [],
+              "measurement": "DistributedRegion",
+              "policy": "autogen",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "PutsRate"
+                    ],
+                    "type": "field"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "region",
+                  "operator": "=~",
+                  "value": "/^$region$/"
+                }
+              ]
+            },
+            {
+              "alias": "Puts All Rate",
+              "dsType": "influxdb",
+              "groupBy": [],
+              "measurement": "DistributedRegion",
+              "policy": "autogen",
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "PutAllRate"
+                    ],
+                    "type": "field"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "region",
+                  "operator": "=~",
+                  "value": "/^$region$/"
+                }
+              ]
+            },
+            {
+              "alias": "Puts Local Rate",
+              "dsType": "influxdb",
+              "groupBy": [],
+              "measurement": "DistributedRegion",
+              "policy": "autogen",
+              "refId": "D",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "PutLocalRate"
+                    ],
+                    "type": "field"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "region",
+                  "operator": "=~",
+                  "value": "/^$region$/"
+                }
+              ]
+            },
+            {
+              "alias": "Puts Remote Rate",
+              "dsType": "influxdb",
+              "groupBy": [],
+              "measurement": "DistributedRegion",
+              "policy": "autogen",
+              "refId": "E",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "PutRemoteRate"
+                    ],
+                    "type": "field"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "region",
+                  "operator": "=~",
+                  "value": "/^$region$/"
+                }
+              ]
+            },
+            {
+              "alias": "Create Rate",
+              "dsType": "influxdb",
+              "groupBy": [],
+              "measurement": "DistributedRegion",
+              "policy": "autogen",
+              "refId": "F",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "CreatesRate"
+                    ],
+                    "type": "field"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "region",
+                  "operator": "=~",
+                  "value": "/^$region$/"
+                }
+              ]
+            },
+            {
+              "alias": "Destroy Rate",
+              "dsType": "influxdb",
+              "groupBy": [],
+              "measurement": "DistributedRegion",
+              "policy": "autogen",
+              "refId": "G",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "DestroyRate"
+                    ],
+                    "type": "field"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "region",
+                  "operator": "=~",
+                  "value": "/^$region$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "CRUD Operations Rate",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "rps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": false
+            }
+          ]
+        }
+      ],
+      "showTitle": false,
+      "titleSize": "h6",
+      "height": 374,
       "repeat": null,
       "repeatRowId": null,
       "repeatIteration": null,
