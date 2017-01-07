@@ -35,7 +35,11 @@ java -jar ./target/statistics-to-grafana-0.0.1-SNAPSHOT.jar
    --geodeMemberName=server2 
    --archiveFile=server2_StatisticsArchiveFile.gfs
 ```
-Note that the statistics from both files is loaded in the same database: `GeodeArchive` under two different `archiveMember` tags: `server1` and `server2`.
+> Note that the statistics from both files is loaded in the same database: `GeodeArchive`! 
+> The `archiveMember` meta-tags (`server1` and `server2`) is used to distinct both series.
+> Use [Grafana Templating](http://docs.grafana.org/reference/templating/) to define multi-select query variables for 
+> the `archiveMember` meta-atag (e.g. `show tag values with key="archiveMember"`). This allow mixing and matching measurments 
+> from different archive files.  
 
 Complete list of statistics-to-grafana parameters:
 

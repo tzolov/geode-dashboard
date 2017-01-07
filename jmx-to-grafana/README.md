@@ -63,12 +63,16 @@ java -jar ./target/jmx-to-grafana-0.0.1-SNAPSHOT.jar
 | cronExpression | 0 0/1 * * * ? | Time interval for pulling JMX metrics from Geode and load them into InfluxDB. Defaults to 1m. Use `--cronExpression="..."` syntax to set the expression from the command line. |
 
 ###### Exported Geode MBeans
-| Geode MBean Name | InfluxDB Measurement Name | Description |
-| ------------- | ------------- | ------------ |
-| [DistributedSystemMXBean](http://bit.ly/2ijH8dj) `GemFire:type=Distributed,service=System`| DistributedSystem | System-wide aggregate MBean that provides a high-level view of the entire distributed system including all members (cache servers, peers, locators) and their caches. At any given point of time, it can provide a snapshot of the complete distributed system and its operations. |
-| [DistributedRegionMXBean](http://bit.ly/2ijEnIX) `GemFire:type=Distributed,service=Region,name=\<regionName\>` | DistributedRegion | System-wide aggregate MBean of a named region. It provides a high-level view of a region for all members hosting and/or using that region. For example, you can obtain a list of all members that are hosting the region. Some methods are only available for partitioned regions. |
-| [MemberMXBean](http://bit.ly/2jbLovt) `GemFire:type=Member,member=\<name-or-dist-member-id\>` | Member | Member’s local view of its connection and cache. It is the primary gateway to manage a particular member. It exposes member level attributes and statistics. |
+| Geode MBean | InfluxDB Measurement | InfluxDB Meta-tags | Description |
+| ------------- | ------------- | ------------ | ------------ |
+| [DistributedSystemMXBean](http://bit.ly/2ijH8dj) | DistributedSystem | none | System-wide aggregate MBean that provides a high-level view of the entire distributed system including all members (cache servers, peers, locators) and their caches. At any given point of time, it can provide a snapshot of the complete distributed system and its operations. |
+| [DistributedRegionMXBean](http://bit.ly/2ijEnIX) | DistributedRegion | region | System-wide aggregate MBean of a named region. It provides a high-level view of a region for all members hosting and/or using that region. For example, you can obtain a list of all members that are hosting the region. Some methods are only available for partitioned regions. |
+| [MemberMXBean](http://bit.ly/2jbLovt) | Member | member | Member’s local view of its connection and cache. It is the primary gateway to manage a particular member. It exposes member level attributes and statistics. |
 Consult the [Geode JMX MBeans](http://geode.apache.org/docs/guide/managing/management/list_of_mbeans.html) for the full list of available Geode MBeans.
+
+> *Note*: Use [Grafana Templating](http://docs.grafana.org/reference/templating/) to define query variables for 
+> the `member` adn `region` meta-tags (e.g. `show tag values with key="member"` or `show tag values with key="region"`). 
+> This allow mix and match measurments from different cluster members or multiple regions.  
 
 ###### Automatic feed re-configuration
 The `jmx-to-grafana` reconfigures the feeds automatically on following Geode events:
