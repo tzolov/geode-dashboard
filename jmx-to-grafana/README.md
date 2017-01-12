@@ -1,19 +1,19 @@
 # Apache Geode real-time JMX Metrics Plot with Grafana
 
-[<img align="left" src="http://img.youtube.com/vi/e2UlWm1w2yY/0.jpg" alt="zeppelin-view" hspace="10" width="130"></img>](https://www.youtube.com/watch?v=e2UlWm1w2yY) 
-[Apache Geode](http://geode.apache.org/) uses a federated [Open MBean](http://geode.apache.org/docs/guide/managing/management/mbean_architecture.html) 
-architecture to manage and monitor all members of the distributed system. Your Java classes interact with a single 
-MBeanServer that aggregates MBeans from other local and remote members. Using this strategy gives you a consolidated, 
+[<img align="left" src="http://img.youtube.com/vi/e2UlWm1w2yY/0.jpg" alt="zeppelin-view" hspace="10" width="130"></img>](https://www.youtube.com/watch?v=e2UlWm1w2yY)
+[Apache Geode](http://geode.apache.org/) uses a federated [Open MBean](http://geode.apache.org/docs/guide/managing/management/mbean_architecture.html)
+architecture to manage and monitor all members of the distributed system. Your Java classes interact with a single
+MBeanServer that aggregates MBeans from other local and remote members. Using this strategy gives you a consolidated,
 single-agent view of the distributed system.					
-One can use generic JMX clients to monitor or manage the Geode distributed system by using JMX compliant tools such 
-as [JConsole](http://geode.apache.org/docs/guide/managing/management/mbeans_jconsole.html) 
+One can use generic JMX clients to monitor or manage the Geode distributed system by using JMX compliant tools such
+as [JConsole](http://geode.apache.org/docs/guide/managing/management/mbeans_jconsole.html)
 and [Geode Pulse](http://geode.apache.org/docs/guide/tools_modules/pulse/chapter_overview.html).
-  
-`jmx-to-grafana` feeds Geode MBeans metrics data into time-series databases (such as InfluxDB). Later is used in turn to 
-feed the [Gfafana](http://grafana.org/) dashboards. Grafana allows to build comprehensive dashboards.  
 
-The [Geode JMX Grafana Dashboard Video](https://www.youtube.com/watch?v=e2UlWm1w2yY) illustrates the approach. It shows how to deploy and start the `jmx-to-grafana` 
-and how to build Grafana dashboards using the geode jmx feed. 
+`jmx-to-grafana` feeds Geode MBeans metrics data into time-series databases (such as InfluxDB). Later is used in turn to
+feed the [Grafana](http://grafana.org/) dashboards. Grafana allows to build comprehensive dashboards.  
+
+The [Geode JMX Grafana Dashboard Video](https://www.youtube.com/watch?v=e2UlWm1w2yY) illustrates the approach. It shows how to deploy and start the `jmx-to-grafana`
+and how to build Grafana dashboards using the geode jmx feed.
 
 
 ## Build
@@ -28,22 +28,22 @@ mvn clean install
 ```
 
 ## Quick Start
-Build Grafana dashboard to plot real-time metrics of Geode cluster. 
-[Grafana](http://docs.grafana.org/installation) and 
-[InfluxDB](https://docs.influxdata.com/influxdb/v1.1/introduction/installation) have to be installed first. 
+Build Grafana dashboard to plot real-time metrics of Geode cluster.
+[Grafana](http://docs.grafana.org/installation) and
+[InfluxDB](https://docs.influxdata.com/influxdb/v1.1/introduction/installation) have to be installed first.
 
 #### Start JMX To InfluxDB loader
-The `jmx-to-grafana` reads every minute (`cronExpression="0 0/1 * * * ?"`) the JMX metrics from 
-Geode MBean Server (`http://localhost:1199`) and loads them into InfluxDB database (`GeodeJmx`). The InfluxDB is 
-running at `http://localhost:8086`. 
+The `jmx-to-grafana` reads every minute (`cronExpression="0 0/1 * * * ?"`) the JMX metrics from
+Geode MBean Server (`http://localhost:1199`) and loads them into InfluxDB database (`GeodeJmx`). The InfluxDB is
+running at `http://localhost:8086`.
 
-The Grafana server (`http://localhost:30000`) uses the `GeodeJmx` time-series database to plot various `Real-Time` dashboards 
+The Grafana server (`http://localhost:3000`) uses the `GeodeJmx` time-series database to plot various `Real-Time` dashboards
 
 ```
 java -jar ./target/jmx-to-grafana-0.0.1-SNAPSHOT.jar
-   --mbeanHostName=localhost 
+   --mbeanHostName=localhost
    --mbeanPort=1199
-   --influxUrl=http://localhost:8086 
+   --influxUrl=http://localhost:8086
    --influxDatabaseName=GeodeJmx
    --cronExpression="0 0/1 * * * ?"
 ```
@@ -70,8 +70,8 @@ java -jar ./target/jmx-to-grafana-0.0.1-SNAPSHOT.jar
 | [MemberMXBean](http://bit.ly/2jbLovt) | Member | member | Member’s local view of its connection and cache. It is the primary gateway to manage a particular member. It exposes member level attributes and statistics. |
 Consult the [Geode JMX MBeans](http://geode.apache.org/docs/guide/managing/management/list_of_mbeans.html) for the full list of available Geode MBeans.
 
-> *Note*: Use [Grafana Templating](http://docs.grafana.org/reference/templating/) to define query variables for 
-> the `member` adn `region` meta-tags (e.g. `show tag values with key="member"` or `show tag values with key="region"`). 
+> *Note*: Use [Grafana Templating](http://docs.grafana.org/reference/templating/) to define query variables for
+> the `member` adn `region` meta-tags (e.g. `show tag values with key="member"` or `show tag values with key="region"`).
 > This allow mix and match measurments from different cluster members or multiple regions.  
 
 ###### Automatic feed re-configuration
@@ -80,7 +80,7 @@ The `jmx-to-grafana` reconfigures the feeds automatically on following Geode eve
 * New Regions is created for removed: `gemfire.distributedsystem.cache.region.created`, `gemfire.distributedsystem.cache.region.closed`
 
 
-#### Build Grafana Goede JMX Dashboard
+#### Build Grafana Geode JMX Dashboard
 | | |
 | ------------- | ------------ |
 | ![GeodeJmx Sourxe Definition](../doc/DefineGeodeJmxSource.png) | Define datasource:`GeodeJmx` to the `GeodeJmx` Influx database. Set appropriate InfluxDB URL and credentials. |
@@ -88,7 +88,7 @@ The `jmx-to-grafana` reconfigures the feeds automatically on following Geode eve
 | ![Geode HeapUsage Gauge Options](../doc/GeodeHeapUsageGaugeOptions.png) | Within the `Options` tab set the value stat to `current`, check the `Spark Line Show` and `Gauge Show` boxes. |
 | ![Geode HeapUsage Gauge](../doc/GeodeHeapUsageGauge.png) | Result gauge would look like this |
 
-Explore the `Predefined Dashboards` for more comprehensive dashboards panels. 
+Explore the `Predefined Dashboards` for more comprehensive dashboards panels.
 
 #### Predefined Dashboards
-Use or customize the sample [Geode Grafana Dashboards](./src/main/resources/dashboards) to visualize Cluster, Members or Regions view of the distributed system. 
+Use or customize the sample [Geode Grafana Dashboards](./src/main/resources/dashboards) to visualize Cluster, Members or Regions view of the distributed system.
