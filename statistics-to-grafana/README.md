@@ -19,6 +19,13 @@ Build Grafana dashboard to analyze the statistics files collected on two Geode i
 [Grafana](http://docs.grafana.org/installation) and [InfluxDB](https://docs.influxdata.com/influxdb/v1.1/introduction/installation) have to be installed first. Samples below expect InfluxDB on `http://localhost:8086` and Grafana on `http://localhost:30000`. 
 
 #### Load statistics into an InfluxDB database
+If the target InfluxDB database (`GeodeArchive` for example) doesn't exist yet create one. You can do it through the `influx` command-line tool:
+```
+influx> create database GoedeArchive
+influx> show databases
+```
+or with the help of the `--cleanDatabaseOnLoad=true` parameter.  Later removes and creates again the time-series database. 
+
 Load the `server1_StatisticsArchiveFile.gfs` file containing historical statistics for `server1` cluster member into influx database `GeodeArchive`. Set the measurement archiveMember tag to ‘server1’.
 ```
 java -jar ./target/statistics-to-grafana-0.0.1-SNAPSHOT.jar 
