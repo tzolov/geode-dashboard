@@ -60,6 +60,8 @@ Complete list of statistics-to-grafana parameters:
 | archiveFile | None | File path to a single Geode statistics archive file. Note: every Geode instance (e.g. member) generates a statistics file. It is helpful to copy all the statistics files from all members into one directory so that you can easily load the files into InfluxDb. |
 | influxDatabaseName | GeodeArchive | Database to load the statistics into. Same database can be used to load statistics from multiple archive files. Use the `geodeMemerName` to distinct the time series |
 | geodeMemberName | None | Name that uniquely identifies the Geode instance (e.g. member) which produced the statistics being loaded  |
+| allowedStatTypes | None | Comma separated list of Statistic Type Names to import. If empty all statistic is read |
+| skipZeroValuesTimeSeries | true | When true the time series that contain only zero values will not be imported  |
 
 #### Build Grafana Dashboard
 |  |  |

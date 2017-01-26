@@ -102,7 +102,7 @@ public class AbstractStatisticsTSDBLoaderTest {
 		public Map<String, List<MeasurementRecord>> measurements = new HashMap<>();
 
 		public TestMeasurementLoader(boolean cleanDatabaseOnLoad, File archiveFile, String geodeMemberName) {
-			super(cleanDatabaseOnLoad, archiveFile, geodeMemberName);
+			super(cleanDatabaseOnLoad, archiveFile, geodeMemberName, new String[0]);
 		}
 
 		@Override

@@ -17,6 +17,7 @@ package net.tzolov.geode.archive.loader;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.IdentityHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,8 @@ import org.springframework.util.Assert;
 
 import com.gemstone.gemfire.internal.StatArchiveReader;
 import com.gemstone.gemfire.internal.StatArchiveReader.StatValue;
+import com.gemstone.gemfire.internal.StatArchiveReader.ValueFilter;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Common parent for all TSDB data loaders.
@@ -40,13 +43,20 @@ public abstract class AbstractStatisticsTSDBLoader {
 
 	protected boolean cleanDatabaseOnLoad;
 
+	private IdentityHashMap<StatValue, double[]> statValueCache = new IdentityHashMap<>();
+
+	private IdentityHashMap<StatValue, Boolean> statValueEmpty = new IdentityHashMap<>();
+
+	private ValueFilter[] statFilters;
+
 	/**
 	 * @param cleanDatabaseOnLoad If true the target TSDB is created or recreate.
 	 * @param archiveFile The Apache Geode (GemFire) statistics archive file
 	 * @param geodeMemberName Unique name used to distinct the statistics in this
-	 * 			archiveFile from the archive files in the other members.
+	 * @param allowStatTypes List of Statistic Type Names to import. If empty all statistic is imported
 	 */
-	public AbstractStatisticsTSDBLoader(boolean cleanDatabaseOnLoad, File archiveFile, String geodeMemberName) {
+	public AbstractStatisticsTSDBLoader(boolean cleanDatabaseOnLoad, File archiveFile, String geodeMemberName,
+			String[] allowStatTypes) {
 
 		Assert.notNull(archiveFile, "Not null archiveFile is required!");
 		Assert.hasText(geodeMemberName, "Not empty geodeMemberName is required!");
@@ -54,6 +64,10 @@ public abstract class AbstractStatisticsTSDBLoader {
 		this.archiveFileName = archiveFile;
 		this.geodeMemberName = geodeMemberName;
 		this.cleanDatabaseOnLoad = cleanDatabaseOnLoad;
+
+		if (allowStatTypes != null && allowStatTypes.length > 0) {
+			statFilters = new ValueFilter[] {new StatFilter(allowStatTypes)};
+		}
 	}
 
 	public void load() throws IOException {
@@ -62,18 +76,26 @@ public abstract class AbstractStatisticsTSDBLoader {
 			doCreateEmptyDatabase();
 		}
 
+		statValueCache.clear();
+		statValueEmpty.clear();
+
 		final StatArchiveReader reader =
-				new StatArchiveReader(new File[] {archiveFileName}, null, false);
+				new StatArchiveReader(new File[] {archiveFileName}, statFilters, false);
 
 		for (Object r : reader.getResourceInstList()) {
 
 			final StatArchiveReader.ResourceInst ri = (StatArchiveReader.ResourceInst) r;
 
+			if (statFilters !=null && statFilters.length > 0 && !statFilters[0].typeMatches(ri.getType().getName())) {
+				// Filter out measurement types not in the allowed types list
+				continue;
+			}
+
 			String measurementName = ri.getType().getName() + ":" + ri.getName();
 
-			LOG.info("\nMeasurement: " + measurementName
-					+ ", Samples#: " + ri.getSampleCount()
-					+ ", Fields#: " + ri.getStatValues().length);
+			LOG.info("Measurement [" + measurementName
+					+ "], Samples: " + ri.getSampleCount()
+					+ ", Fields: " + ri.getStatValues().length);
 
 			doPrepareMeasurementLoad();
 
@@ -116,6 +138,59 @@ public abstract class AbstractStatisticsTSDBLoader {
 	 * @return Returns the value for the provided field and sample index.
 	 */
 	public double getMeasurementFieldValue(StatValue measurementField, int measurementSampleIndex) {
-		return measurementField.getRawSnapshots()[measurementSampleIndex];
+		return getCachedSeries(measurementField)[measurementSampleIndex];
+	}
+
+	public boolean allValuesAreZero(StatValue measurementField) {
+
+		if (!statValueEmpty.containsKey(measurementField)) {
+			statValueEmpty.put(measurementField, areZeors(getCachedSeries(measurementField)));
+		}
+
+		return statValueEmpty.get(measurementField);
+	}
+
+	private boolean areZeors(double[] values) {
+		for (double d : values) {
+			if (d != 0.0d) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private double[] getCachedSeries(StatValue measurementField) {
+		if (!statValueCache.containsKey(measurementField)) {
+//			System.out.println("Cache statistics values for : " + measurementField.getDescriptor().getName());
+			statValueCache.put(measurementField, measurementField.getRawSnapshots());
+		}
+		return statValueCache.get(measurementField);
+	}
+
+	public static class StatFilter implements ValueFilter {
+		private final ImmutableSet<String> statTypes;
+		StatFilter(String[] allowedStatTypes) {
+			statTypes = ImmutableSet.copyOf(allowedStatTypes);
+		}
+
+		@Override
+		public boolean archiveMatches(File file) {
+			return true;
+		}
+
+		@Override
+		public boolean typeMatches(String s) {
+			return statTypes.contains(s);
+		}
+
+		@Override
+		public boolean statMatches(String s) {
+			return true;
+		}
+
+		@Override
+		public boolean instanceMatches(String s, long l) {
+			return true;
+		}
 	}
 }

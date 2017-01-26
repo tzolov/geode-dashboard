@@ -15,7 +15,7 @@
  */
 package net.tzolov.geode.archive.loader;
 
- import java.io.File;
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import org.influxdb.InfluxDB;
@@ -48,6 +48,8 @@ public class StatisticsToInfluxLoader extends AbstractStatisticsTSDBLoader {
 
 	private BatchPoints measurementBatch;
 
+	private boolean skipZeroValuesTimeSeries;
+
 	@Autowired
 	public StatisticsToInfluxLoader(InfluxDB influxDb,
 			@Value("${cleanDatabaseOnLoad}") boolean cleanDatabaseOnLoad,
@@ -55,9 +57,12 @@ public class StatisticsToInfluxLoader extends AbstractStatisticsTSDBLoader {
 			@Value("${influxMeasurementBatchSize}") int influxMeasurementBatchSize,
 			@Value("${influxDatabaseName}") String influxDatabaseName,
 			@Value("${archiveFile}") File archiveFile,
-			@Value("${geodeMemberName}") String geodeMemberName) {
+			@Value("${geodeMemberName}") String geodeMemberName,
+			@Value("${allowedStatTypes}") String[] allowStatTypes,
+			@Value("${skipZeroValuesTimeSeries}") boolean skipZeroValuesTimeSeries) {
 
-		super(cleanDatabaseOnLoad, archiveFile, geodeMemberName);
+		super(cleanDatabaseOnLoad, archiveFile, geodeMemberName, allowStatTypes);
+		this.skipZeroValuesTimeSeries = skipZeroValuesTimeSeries;
 
 		Assert.notNull(influxDb, "Not null InfluxDB is required!");
 
@@ -87,12 +92,21 @@ public class StatisticsToInfluxLoader extends AbstractStatisticsTSDBLoader {
 				.tag("type", measurementType)
 				.time(measurementTimestamp, TimeUnit.MILLISECONDS);
 
+		boolean pointsFound = false;
+
 		for (StatValue measurementField : measurementFields) {
-			measurement.addField(
-					getMeasurementFieldName(measurementField),
-					getMeasurementFieldValue(measurementField, measurementSampleIndex));
+
+			if (!skipZeroValuesTimeSeries || !allValuesAreZero(measurementField)) {
+				pointsFound = true;
+				measurement.addField(
+						getMeasurementFieldName(measurementField),
+						getMeasurementFieldValue(measurementField, measurementSampleIndex));
+			}
 		}
-		measurementBatch.point(measurement.build());
+
+		if (pointsFound) {
+			measurementBatch.point(measurement.build());
+		}
 
 		if (measurementSampleIndex % influxMeasurementBatchSize == 0) {
 			influxDB.write(measurementBatch);
