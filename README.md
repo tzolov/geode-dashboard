@@ -8,7 +8,7 @@ and historical ([statistics-to-grafana](./statistics-to-grafana)) metrics monito
 
 ## Architecture
 As illustrated on the diagram below, the `Geode Grafana` toolset provides unified technical stack for visualizing 
-and analysing both `Real-Time` (e.g JMX metrics) and `Hitorical` (archive files) cluster statistics.  
+and analysing both `Real-Time` (e.g JMX metrics) and `Historical` (archive files) cluster statistics.  
 
 ###### Geode JMX Metrics Analysis
 Geode implements federated `JMX` architecture to manage and monitor all members of the distributed system. 
