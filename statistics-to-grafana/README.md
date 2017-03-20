@@ -1,7 +1,7 @@
 # Analyse Apache Geode & GemFire Statistics With Grafana
 
-[Apache Geode](http://geode.apache.org/) can collect [Statistics](http://geode.apache.org/docs/guide/managing/statistics/chapter_overview.html) about the distributed system and persist it in archive files. The `StatisticsToGrafana` tool helps to load the archive files in time-series databases such as InfluxDB used to feed [Gfafana](http://grafana.org/) dashboards. 
-Use the stack to build comprehensive [Gfafana](http://grafana.org/) dashboards to visualize, analyse and compare statistics data from different cluster members or even different Geode clusters.
+[Apache Geode](http://geode.apache.org/) can collect [Statistics](http://geode.apache.org/docs/guide/managing/statistics/chapter_overview.html) about the distributed system and persist it in archive files. The `StatisticsToGrafana` tool helps to load the archive files in time-series databases such as InfluxDB used to feed [Grafana](http://grafana.org/) dashboards. 
+Use the stack to build comprehensive [Grafana](http://grafana.org/) dashboards to visualize, analyse and compare statistics data from different cluster members or even different Geode clusters.
 
 ## Build
 Get the source code from github
@@ -16,12 +16,12 @@ mvn clean install
 
 ## Quick Start
 Build Grafana dashboard to analyze the statistics files collected on two Geode instances (e.g. members). 
-[Grafana](http://docs.grafana.org/installation) and [InfluxDB](https://docs.influxdata.com/influxdb/v1.1/introduction/installation) have to be installed first. Samples below expect InfluxDB on `http://localhost:8086` and Grafana on `http://localhost:30000`. 
+[Grafana](http://docs.grafana.org/installation) and [InfluxDB](https://docs.influxdata.com/influxdb/v1.1/introduction/installation) have to be installed first. Samples below expect InfluxDB on `http://localhost:8086` and Grafana on `http://localhost:3000`. 
 
 #### Load statistics into an InfluxDB database
 If the target InfluxDB database (`GeodeArchive` for example) doesn't exist yet create one. You can do it through the `influx` command-line tool:
 ```
-influx> create database GoedeArchive
+influx> create database GeodeArchive
 influx> show databases
 ```
 or with the help of the `--cleanDatabaseOnLoad=true` parameter.  Later removes and creates again the time-series database. 
