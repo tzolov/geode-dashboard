@@ -28,18 +28,18 @@ or with the help of the `--cleanDatabaseOnLoad=true` parameter.  Later removes a
 
 Load the `server1_StatisticsArchiveFile.gfs` file containing historical statistics for `server1` cluster member into influx database `GeodeArchive`. Set the measurement archiveMember tag to ‘server1’.
 ```
-java -jar ./target/statistics-to-grafana-0.0.1-SNAPSHOT.jar 
-   --influxUrl=http://localhost:8086 
-   --influxDatabaseName=GeodeArchive 
-   --geodeMemberName=server1 
+java -jar ./target/statistics-to-grafana-0.0.1-SNAPSHOT.jar \
+   --influxUrl=http://localhost:8086 \
+   --influxDatabaseName=GeodeArchive \
+   --geodeMemberName=server1 \
    --archiveFile=server1_StatisticsArchiveFile.gfs
 ```
 Load the `server2_StatisticsArchiveFile.gfs` file containing historical statistics for `server2` cluster member in the same influx database `GeodeArchive`:
 ```
-java -jar ./target/statistics-to-grafana-0.0.1-SNAPSHOT.jar 
-   --influxUrl=http://localhost:8086 
-   --influxDatabaseName=GeodeArchive 
-   --geodeMemberName=server2 
+java -jar ./target/statistics-to-grafana-0.0.1-SNAPSHOT.jar \
+   --influxUrl=http://localhost:8086 \
+   --influxDatabaseName=GeodeArchive \
+   --geodeMemberName=server2 \
    --archiveFile=server2_StatisticsArchiveFile.gfs
 ```
 > Note that the statistics from both files is loaded in the same database: `GeodeArchive`! 
