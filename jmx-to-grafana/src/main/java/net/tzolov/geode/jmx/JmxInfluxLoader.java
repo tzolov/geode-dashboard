@@ -16,6 +16,7 @@
 package net.tzolov.geode.jmx;
 
 import javax.management.MBeanAttributeInfo;
+import javax.management.MBeanInfo;
 import javax.management.MBeanServerConnection;
 import javax.management.MBeanServerInvocationHandler;
 import javax.management.MalformedObjectNameException;
@@ -165,7 +166,7 @@ public class JmxInfluxLoader {
 
 	private Query memberQuery(InfluxDB influxDB, MBeanServerConnection jmxConnection, String memberName) {
 		ImmutableMap<String, String> tags = ImmutableMap.<String, String>builder().put("member", memberName).build();
-		String objectName = "GemFire:type=Member,member=" + memberName;
+		String objectName = "GemFire:type=Member,member=" + memberName.replace(":", "-");
 		return createQuery(influxDB, jmxConnection, tags, objectName, "Member");
 	}
 
