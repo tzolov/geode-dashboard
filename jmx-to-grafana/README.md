@@ -34,17 +34,17 @@ Build Grafana dashboard to plot real-time metrics of Geode cluster.
 
 #### Start JMX To InfluxDB loader
 The `jmx-to-grafana` reads every minute (`cronExpression="0 0/1 * * * ?"`) the JMX metrics from
-Geode MBean Server (`http://localhost:1199`) and loads them into InfluxDB database (`GeodeJmx`). The InfluxDB is
+Geode MBean Server (`http://localhost:1099`) and loads them into InfluxDB database (`GeodeJmx`). The InfluxDB is
 running at `http://localhost:8086`.
 
 The Grafana server (`http://localhost:3000`) uses the `GeodeJmx` time-series database to plot various `Real-Time` dashboards
 
 ```
-java -jar ./target/jmx-to-grafana-0.0.1-SNAPSHOT.jar
-   --mbeanHostName=localhost
-   --mbeanPort=1199
-   --influxUrl=http://localhost:8086
-   --influxDatabaseName=GeodeJmx
+java -jar ./target/jmx-to-grafana-0.0.1-SNAPSHOT.jar \
+   --mbeanHostName=localhost \
+   --mbeanPort=1099 \
+   --influxUrl=http://localhost:8086 \
+   --influxDatabaseName=GeodeJmx \
    --cronExpression="0 0/1 * * * ?"
 ```
 
@@ -59,7 +59,7 @@ java -jar ./target/jmx-to-grafana-0.0.1-SNAPSHOT.jar
 | influxRetentionPolicy | autogen | InfluxDB retention policy |
 | mbeanHostName | None |  |
 | influxDatabaseName | GeodeJmx | Database to load the jmx metrics into. Same database is used to load metrics for cluster members. The `member` is used to distinct the time-series form different members. |
-| mbeanPort | 1190 |  |
+| mbeanPort | 1099 |  |
 | cronExpression | 0 0/1 * * * ? | Time interval for pulling JMX metrics from Geode and load them into InfluxDB. Defaults to 1m. Use `--cronExpression="..."` syntax to set the expression from the command line. |
 
 ###### Exported Geode MBeans
