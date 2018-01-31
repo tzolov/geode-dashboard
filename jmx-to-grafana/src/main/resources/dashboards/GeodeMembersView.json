@@ -44,7 +44,7 @@
           "text": "server2",
           "value": "server2"
         },
-        "datasource": "myInfluxDB2",
+        "datasource": "GeodeJmx",
         "hide": 0,
         "includeAll": false,
         "label": "Member Name",

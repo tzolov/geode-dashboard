@@ -18,6 +18,7 @@ package net.tzolov.geode.archive.loader;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.geode.internal.statistics.StatArchiveReader;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDB.ConsistencyLevel;
 import org.influxdb.dto.BatchPoints;
@@ -30,8 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
-import com.gemstone.gemfire.internal.StatArchiveReader.StatValue;
 
 @Service
 public class StatisticsToInfluxLoader extends AbstractStatisticsTSDBLoader {
@@ -86,7 +85,7 @@ public class StatisticsToInfluxLoader extends AbstractStatisticsTSDBLoader {
 
 	@Override
 	protected void doLoadMeasurement(String measurementName, String measurementType,
-			int measurementSampleIndex, long measurementTimestamp, StatValue[] measurementFields) {
+			int measurementSampleIndex, long measurementTimestamp, StatArchiveReader.StatValue[] measurementFields) {
 
 		Builder measurement = Point.measurement(measurementName)
 				.tag("type", measurementType)
@@ -94,7 +93,7 @@ public class StatisticsToInfluxLoader extends AbstractStatisticsTSDBLoader {
 
 		boolean pointsFound = false;
 
-		for (StatValue measurementField : measurementFields) {
+		for (StatArchiveReader.StatValue measurementField : measurementFields) {
 
 			if (!skipZeroValuesTimeSeries || !allValuesAreZero(measurementField)) {
 				pointsFound = true;

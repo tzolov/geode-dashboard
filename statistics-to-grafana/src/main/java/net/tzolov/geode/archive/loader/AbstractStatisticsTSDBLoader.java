@@ -19,15 +19,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.IdentityHashMap;
 
+import com.google.common.collect.ImmutableSet;
+import org.apache.geode.internal.statistics.StatArchiveReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.util.Assert;
-
-import com.gemstone.gemfire.internal.StatArchiveReader;
-import com.gemstone.gemfire.internal.StatArchiveReader.StatValue;
-import com.gemstone.gemfire.internal.StatArchiveReader.ValueFilter;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * Common parent for all TSDB data loaders.
@@ -43,11 +40,11 @@ public abstract class AbstractStatisticsTSDBLoader {
 
 	protected boolean cleanDatabaseOnLoad;
 
-	private IdentityHashMap<StatValue, double[]> statValueCache = new IdentityHashMap<>();
+	private IdentityHashMap<StatArchiveReader.StatValue, double[]> statValueCache = new IdentityHashMap<>();
 
-	private IdentityHashMap<StatValue, Boolean> statValueEmpty = new IdentityHashMap<>();
+	private IdentityHashMap<StatArchiveReader.StatValue, Boolean> statValueEmpty = new IdentityHashMap<>();
 
-	private ValueFilter[] statFilters;
+	private StatArchiveReader.ValueFilter[] statFilters;
 
 	/**
 	 * @param cleanDatabaseOnLoad If true the target TSDB is created or recreate.
@@ -66,7 +63,7 @@ public abstract class AbstractStatisticsTSDBLoader {
 		this.cleanDatabaseOnLoad = cleanDatabaseOnLoad;
 
 		if (allowStatTypes != null && allowStatTypes.length > 0) {
-			statFilters = new ValueFilter[] {new StatFilter(allowStatTypes)};
+			statFilters = new StatArchiveReader.ValueFilter[] { new StatFilter(allowStatTypes) };
 		}
 	}
 
@@ -80,13 +77,13 @@ public abstract class AbstractStatisticsTSDBLoader {
 		statValueEmpty.clear();
 
 		final StatArchiveReader reader =
-				new StatArchiveReader(new File[] {archiveFileName}, statFilters, false);
+				new StatArchiveReader(new File[] { archiveFileName }, statFilters, false);
 
 		for (Object r : reader.getResourceInstList()) {
 
 			final StatArchiveReader.ResourceInst ri = (StatArchiveReader.ResourceInst) r;
 
-			if (statFilters !=null && statFilters.length > 0 && !statFilters[0].typeMatches(ri.getType().getName())) {
+			if (statFilters != null && statFilters.length > 0 && !statFilters[0].typeMatches(ri.getType().getName())) {
 				// Filter out measurement types not in the allowed types list
 				continue;
 			}
@@ -101,7 +98,7 @@ public abstract class AbstractStatisticsTSDBLoader {
 
 			for (int measurementIndex = 0; measurementIndex < ri.getSampleCount(); measurementIndex++) {
 
-				StatValue[] measurementFields = ri.getStatValues();
+				StatArchiveReader.StatValue[] measurementFields = ri.getStatValues();
 
 				long measurementTimestamp = measurementFields[0].getRawAbsoluteTimeStamps()[measurementIndex];
 
@@ -118,7 +115,7 @@ public abstract class AbstractStatisticsTSDBLoader {
 	abstract protected void doPrepareMeasurementLoad();
 
 	abstract protected void doLoadMeasurement(String measurementName, String measurementType, int measurementSampleIndex,
-			long measurementTimestamp, StatValue[] measurementFields);
+			long measurementTimestamp, StatArchiveReader.StatValue[] measurementFields);
 
 	abstract protected void doCompleteMeasurementLoad();
 
@@ -127,7 +124,7 @@ public abstract class AbstractStatisticsTSDBLoader {
 	 * @param measurementField field to compute the measurement name for.
 	 * @return Returns a measurement name for the provided measurementField
 	 */
-	public String getMeasurementFieldName(StatValue measurementField) {
+	public String getMeasurementFieldName(StatArchiveReader.StatValue measurementField) {
 		return measurementField.getDescriptor().getName();
 	}
 
@@ -137,20 +134,20 @@ public abstract class AbstractStatisticsTSDBLoader {
 	 * @param measurementSampleIndex Field contains list of all samples. Use the index to extract the value for the specified one.
 	 * @return Returns the value for the provided field and sample index.
 	 */
-	public double getMeasurementFieldValue(StatValue measurementField, int measurementSampleIndex) {
+	public double getMeasurementFieldValue(StatArchiveReader.StatValue measurementField, int measurementSampleIndex) {
 		return getCachedSeries(measurementField)[measurementSampleIndex];
 	}
 
-	public boolean allValuesAreZero(StatValue measurementField) {
+	public boolean allValuesAreZero(StatArchiveReader.StatValue measurementField) {
 
 		if (!statValueEmpty.containsKey(measurementField)) {
-			statValueEmpty.put(measurementField, areZeors(getCachedSeries(measurementField)));
+			statValueEmpty.put(measurementField, areZeros(getCachedSeries(measurementField)));
 		}
 
 		return statValueEmpty.get(measurementField);
 	}
 
-	private boolean areZeors(double[] values) {
+	private boolean areZeros(double[] values) {
 		for (double d : values) {
 			if (d != 0.0d) {
 				return false;
@@ -159,7 +156,7 @@ public abstract class AbstractStatisticsTSDBLoader {
 		return true;
 	}
 
-	private double[] getCachedSeries(StatValue measurementField) {
+	private double[] getCachedSeries(StatArchiveReader.StatValue measurementField) {
 		if (!statValueCache.containsKey(measurementField)) {
 //			System.out.println("Cache statistics values for : " + measurementField.getDescriptor().getName());
 			statValueCache.put(measurementField, measurementField.getRawSnapshots());
@@ -167,8 +164,9 @@ public abstract class AbstractStatisticsTSDBLoader {
 		return statValueCache.get(measurementField);
 	}
 
-	public static class StatFilter implements ValueFilter {
+	public static class StatFilter implements StatArchiveReader.ValueFilter {
 		private final ImmutableSet<String> statTypes;
+
 		StatFilter(String[] allowedStatTypes) {
 			statTypes = ImmutableSet.copyOf(allowedStatTypes);
 		}

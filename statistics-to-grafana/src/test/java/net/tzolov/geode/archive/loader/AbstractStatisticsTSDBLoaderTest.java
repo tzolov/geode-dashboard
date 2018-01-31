@@ -26,9 +26,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.geode.internal.statistics.StatArchiveReader;
 import org.junit.Test;
-
-import com.gemstone.gemfire.internal.StatArchiveReader.StatValue;
 
 public class AbstractStatisticsTSDBLoaderTest {
 
@@ -80,9 +79,10 @@ public class AbstractStatisticsTSDBLoaderTest {
 
 		long measurementTimestamp;
 
-		StatValue[] measurementFields;
+		StatArchiveReader.StatValue[] measurementFields;
 
-		public MeasurementRecord(String measurementName, String measurementType, int measurementSampleIndex, long measurementTimestamp, StatValue[] measurementFields) {
+		public MeasurementRecord(String measurementName, String measurementType, int measurementSampleIndex,
+				long measurementTimestamp, StatArchiveReader.StatValue[] measurementFields) {
 			this.measurementName = measurementName;
 			this.measurementType = measurementType;
 			this.measurementSampleIndex = measurementSampleIndex;
@@ -118,7 +118,7 @@ public class AbstractStatisticsTSDBLoaderTest {
 		@Override
 		protected void doLoadMeasurement(String measurementName,
 				String measurementType, int measurementSampleIndex,
-				long measurementTimestamp, StatValue[] measurementFields) {
+				long measurementTimestamp, StatArchiveReader.StatValue[] measurementFields) {
 
 			if (!measurements.containsKey(measurementName)) {
 				measurements.put(measurementName, new ArrayList<>());

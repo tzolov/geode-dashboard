@@ -184,6 +184,7 @@ public class JmxInfluxLoader {
 				influxRetentionPolicy,
 				tags,
 				resultAttributesToWriteAsTags,
+				ImmutableList.of(),
 				false
 		);
 

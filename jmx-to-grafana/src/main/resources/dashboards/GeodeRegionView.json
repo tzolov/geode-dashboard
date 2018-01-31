@@ -45,7 +45,7 @@
           "value": "ticketRegion",
           "tags": []
         },
-        "datasource": "myInfluxDB2",
+        "datasource": "GeodeJmx",
         "hide": 0,
         "includeAll": false,
         "label": "Region",
