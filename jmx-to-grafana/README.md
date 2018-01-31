@@ -40,7 +40,7 @@ running at `http://localhost:8086`.
 The Grafana server (`http://localhost:3000`) uses the `GeodeJmx` time-series database to plot various `Real-Time` dashboards
 
 ```
-java -jar ./target/jmx-to-grafana-0.0.1-SNAPSHOT.jar \
+java -jar ./target/jmx-to-grafana-0.0.2-SNAPSHOT.jar \
    --mbeanHostName=localhost \
    --mbeanPort=1099 \
    --influxUrl=http://localhost:8086 \
